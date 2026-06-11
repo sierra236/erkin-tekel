@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tekel Bayii — Yönetim Paneli</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-icon">🍺</span>
+        <div>
+          <div class="logo-title">Tekel Bayii</div>
+          <div class="logo-sub">Yönetim Paneli</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" onclick="showTab('menu')">📋 Menü Yönetimi</button>
+        <button class="nav-btn" onclick="showTab('qr')">📱 QR Kod</button>
+        <button class="nav-btn" onclick="showTab('settings')">⚙️ Ayarlar</button>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="menu.html" target="_blank" class="preview-btn">👁️ Menüyü Önizle</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- MENU TAB -->
+      <div id="tab-menu" class="tab active">
+        <div class="page-header">
+          <h1>Menü Yönetimi</h1>
+          <button class="btn-primary" onclick="openAddModal()">+ Ürün Ekle</button>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="category-bar">
+          <button class="cat-btn active" onclick="filterCategory('all', this)">Tümü</button>
+          <button class="cat-btn" onclick="filterCategory('sigara', this)">🚬 Sigara</button>
+          <button class="cat-btn" onclick="filterCategory('alkol', this)">🍺 Alkol</button>
+          <button class="cat-btn" onclick="filterCategory('icecek', this)">🥤 İçecek</button>
+          <button class="cat-btn" onclick="filterCategory('atistirmalik', this)">🍿 Atıştırmalık</button>
+          <button class="cat-btn" onclick="filterCategory('diger', this)">📦 Diğer</button>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="product-grid" class="product-grid"></div>
+      </div>
+
+      <!-- QR TAB -->
+      <div id="tab-qr" class="tab">
+        <div class="page-header">
+          <h1>QR Kod Sistemi</h1>
+        </div>
+        <div class="qr-section">
+          <div class="qr-card">
+            <h2>Menü QR Kodu</h2>
+            <p>Müşteriler bu kodu taratarak menünüze ulaşabilir.</p>
+            <div id="qr-display" class="qr-display"></div>
+            <div class="qr-url" id="qr-url-text"></div>
+            <div class="qr-actions">
+              <button class="btn-primary" onclick="downloadQR()">⬇️ QR İndir (PNG)</button>
+              <button class="btn-secondary" onclick="copyMenuLink()">🔗 Linki Kopyala</button>
+            </div>
+          </div>
+          <div class="qr-info-card">
+            <h3>Nasıl Kullanılır?</h3>
+            <ol>
+              <li>QR kodu indirin ve yazdırın.</li>
+              <li>Masanıza veya tezgahınıza yapıştırın.</li>
+              <li>Müşteriler telefonlarıyla taratarak menüyü görür.</li>
+              <li>Menüyü istediğiniz zaman güncelleyebilirsiniz — QR değişmez!</li>
+            </ol>
+            <div class="qr-tip">
+              💡 <strong>İpucu:</strong> QR kodu laminate ettirirseniz daha uzun süre dayanır.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div id="tab-settings" class="tab">
+        <div class="page-header">
+          <h1>Ayarlar</h1>
+        </div>
+        <div class="settings-card">
+          <h2>Bayii Bilgileri</h2>
+          <div class="form-group">
+            <label>Bayii Adı</label>
+            <input type="text" id="set-name" placeholder="Örn: Erkin Tekel" oninput="saveSettings()">
+          </div>
+          <div class="form-group">
+            <label>Adres</label>
+            <input type="text" id="set-address" placeholder="Sokak, Mahalle, İlçe" oninput="saveSettings()">
+          </div>
+          <div class="form-group">
+            <label>Telefon</label>
+            <input type="text" id="set-phone" placeholder="0555 000 00 00" oninput="saveSettings()">
+          </div>
+          <div class="form-group">
+            <label>Çalışma Saatleri</label>
+            <input type="text" id="set-hours" placeholder="08:00 - 23:00" oninput="saveSettings()">
+          </div>
+          <div class="form-group">
+            <label>Menü Başlık Rengi</label>
+            <input type="color" id="set-color" value="#1a1a2e" oninput="saveSettings()">
+          </div>
+          <div class="save-indicator" id="save-indicator">✅ Kaydedildi</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div id="modal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Ürün Ekle</h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit-id">
+        <div class="form-group">
+          <label>Ürün Adı *</label>
+          <input type="text" id="p-name" placeholder="Örn: Marlboro Kırmızı">
+        </div>
+        <div class="form-group">
+          <label>Kategori *</label>
+          <select id="p-category">
+            <option value="sigara">🚬 Sigara</option>
+            <option value="alkol">🍺 Alkol</option>
+            <option value="icecek">🥤 İçecek</option>
+            <option value="atistirmalik">🍿 Atıştırmalık</option>
+            <option value="diger">📦 Diğer</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fiyat (₺) *</label>
+            <input type="number" id="p-price" placeholder="0.00" step="0.5" min="0">
+          </div>
+          <div class="form-group">
+            <label>Birim</label>
+            <select id="p-unit">
+              <option value="adet">Adet</option>
+              <option value="paket">Paket</option>
+              <option value="şişe">Şişe</option>
+              <option value="kutu">Kutu</option>
+              <option value="kg">Kg</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Açıklama</label>
+          <input type="text" id="p-desc" placeholder="Opsiyonel kısa açıklama">
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="p-instock" checked> Stokta var
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal()">İptal</button>
+        <button class="btn-primary" onclick="saveProduct()">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div id="delete-modal" class="modal-overlay" onclick="closeDeleteModal(event)">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>Ürünü Sil</h2>
+        <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p><strong id="delete-name"></strong> ürününü silmek istediğinize emin misiniz?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeDeleteModal()">İptal</button>
+        <button class="btn-danger" onclick="confirmDelete()">Sil</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
