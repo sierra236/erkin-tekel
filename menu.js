@@ -11,7 +11,7 @@ const products = JSON.parse(localStorage.getItem('tekel_products') || '[]');
 const settings = JSON.parse(localStorage.getItem('tekel_settings') || '{}');
 
 // ── Header ────────────────────────────────────────────
-document.getElementById('shop-name').textContent = settings.name || 'Tekel Bayii';
+document.getElementById('shop-name').textContent = settings.name || 'Erkin Tekel';
 if (settings.color) {
   document.querySelector('.menu-header').style.background = settings.color;
 }

@@ -197,7 +197,7 @@ function downloadQR() {
   ctx.fillStyle = '#1a1a2e';
   ctx.font = 'bold 16px Segoe UI, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText(settings.name || 'Tekel Bayii', 140, 278);
+  ctx.fillText(settings.name || 'Erkin Tekel', 140, 278);
   ctx.fillStyle = '#888';
   ctx.font = '12px Segoe UI, sans-serif';
   ctx.fillText('Menüyü görmek için tarayın', 140, 300);
