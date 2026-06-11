@@ -166,8 +166,14 @@ function buildQR() {
   const container = document.getElementById('qr-display');
   container.innerHTML = '';
 
-  const url = window.location.origin + window.location.pathname.replace('index.html', '') + 'menu.html';
-  document.getElementById('qr-url-text').textContent = url;
+  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ products, settings }))));
+  const base = settings.publicUrl
+    ? settings.publicUrl.replace(/\/?$/, '')
+    : (window.location.origin + window.location.pathname.replace(/index\.html$/, '') + 'menu.html');
+  const menuBase = base.endsWith('menu.html') ? base : base + '/menu.html';
+  const url = menuBase + '?d=' + payload;
+
+  document.getElementById('qr-url-text').textContent = menuBase + '?d=<veri>';
 
   qrInstance = new QRCode(container, {
     text: url,
@@ -175,7 +181,7 @@ function buildQR() {
     height: 220,
     colorDark: '#1a1a2e',
     colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.H,
+    correctLevel: QRCode.CorrectLevel.L,
   });
 }
 
@@ -207,7 +213,12 @@ function downloadQR() {
 }
 
 function copyMenuLink() {
-  const url = window.location.origin + window.location.pathname.replace('index.html', '') + 'menu.html';
+  const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ products, settings }))));
+  const base = settings.publicUrl
+    ? settings.publicUrl.replace(/\/?$/, '')
+    : (window.location.origin + window.location.pathname.replace(/index\.html$/, '') + 'menu.html');
+  const menuBase = base.endsWith('menu.html') ? base : base + '/menu.html';
+  const url = menuBase + '?d=' + payload;
   navigator.clipboard.writeText(url).then(() => {
     const btn = event.currentTarget;
     btn.textContent = '✅ Kopyalandı!';
@@ -222,6 +233,7 @@ function loadSettings() {
   document.getElementById('set-phone').value = settings.phone || '';
   document.getElementById('set-hours').value = settings.hours || '';
   document.getElementById('set-color').value = settings.color || '#1a1a2e';
+  document.getElementById('set-url').value = settings.publicUrl || '';
 }
 
 function saveSettings() {
@@ -231,6 +243,7 @@ function saveSettings() {
     phone: document.getElementById('set-phone').value,
     hours: document.getElementById('set-hours').value,
     color: document.getElementById('set-color').value,
+    publicUrl: document.getElementById('set-url').value.trim(),
   };
   localStorage.setItem('tekel_settings', JSON.stringify(settings));
   const ind = document.getElementById('save-indicator');

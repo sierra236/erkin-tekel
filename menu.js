@@ -7,8 +7,22 @@ const CATEGORY_LABELS = {
   diger: '📦 Diğer',
 };
 
-const products = JSON.parse(localStorage.getItem('tekel_products') || '[]');
-const settings = JSON.parse(localStorage.getItem('tekel_settings') || '{}');
+// URL'deki ?d= parametresinden veri oku (QR ile gelen), yoksa localStorage'a bak
+let products, settings;
+const urlParam = new URLSearchParams(window.location.search).get('d');
+if (urlParam) {
+  try {
+    const parsed = JSON.parse(decodeURIComponent(escape(atob(urlParam))));
+    products = parsed.products || [];
+    settings = parsed.settings || {};
+  } catch(e) {
+    products = [];
+    settings = {};
+  }
+} else {
+  products = JSON.parse(localStorage.getItem('tekel_products') || '[]');
+  settings = JSON.parse(localStorage.getItem('tekel_settings') || '{}');
+}
 
 // ── Header ────────────────────────────────────────────
 document.getElementById('shop-name').textContent = settings.name || 'Erkin Tekel';

@@ -74,7 +74,7 @@
               <li>QR kodu indirin ve yazdırın.</li>
               <li>Masanıza veya tezgahınıza yapıştırın.</li>
               <li>Müşteriler telefonlarıyla taratarak menüyü görür.</li>
-              <li>Menüyü istediğiniz zaman güncelleyebilirsiniz — QR değişmez!</li>
+              <li>Menüyü her güncelleyince yeni QR indirin ve değiştirin.</li>
             </ol>
             <div class="qr-tip">
               💡 <strong>İpucu:</strong> QR kodu laminate ettirirseniz daha uzun süre dayanır.
@@ -109,6 +109,11 @@
           <div class="form-group">
             <label>Menü Başlık Rengi</label>
             <input type="color" id="set-color" value="#1a1a2e" oninput="saveSettings()">
+          </div>
+          <div class="form-group">
+            <label>Public Menü URL'si <span style="font-weight:400;color:#999">(QR kodu için)</span></label>
+            <input type="text" id="set-url" placeholder="https://kullanici.github.io/erkin-tekel/menu.html" oninput="saveSettings()">
+            <small style="color:#aaa;font-size:12px;margin-top:4px;display:block">GitHub Pages veya başka bir hosting adresi girin. Boş bırakırsanız yerel adres kullanılır.</small>
           </div>
           <div class="save-indicator" id="save-indicator">✅ Kaydedildi</div>
         </div>
